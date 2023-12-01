@@ -11,7 +11,7 @@ async fn main() -> shuttle_axum::ShuttleAxum {
 async fn day1(Path(nums): Path<String>)
               -> Result<String, StatusCode>
 {
-    let mut nums = nums.split('/').map_while(|n| n.parse::<u32>().ok());
+    let mut nums = nums.split('/').map_while(|n| n.parse::<i32>().ok());
     // No neutral element for xor.
     let x = nums.next();
     if x.is_none() {
