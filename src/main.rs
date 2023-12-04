@@ -1,25 +1,16 @@
-use axum::{routing::get, Router, extract::Path, http::StatusCode};
+use axum::{
+    routing::{get, post},
+    Router,
+};
+mod day1;
+mod day4;
 
 #[shuttle_runtime::main]
 async fn main() -> shuttle_axum::ShuttleAxum {
     let router = Router::new()
-        .route("/1/*nums", get(day1));
+        .route("/1/*nums", get(day1::app))
+        .route("/4/strength", post(day4::strength))
+        .route("/4/contest", post(day4::contest));
 
     Ok(router.into())
-}
-
-async fn day1(Path(nums): Path<String>)
-              -> Result<String, StatusCode>
-{
-    let mut nums = nums.split('/').map_while(|n| n.parse::<i32>().ok());
-    // No neutral element for xor.
-    let x = nums.next();
-    if x.is_none() {
-        return Err(StatusCode::INTERNAL_SERVER_ERROR);
-    }
-    let mut x = x.unwrap();
-    for n in nums {
-        x ^= n
-    }
-    Ok(format!("{}", x * x * x))
 }
