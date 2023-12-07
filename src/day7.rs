@@ -22,17 +22,16 @@ fn compute_bake(cookie: CookieJar) -> eyre::Result<String> {
     }
     let mut cookies = u64::MAX;
     for (i, c) in recipe.iter() {
-        if let Value::Number(c) = c {
-            let c = c.as_u64();
-            if let Some(Value::Number(avail)) = pantry.get(i) {
-                let avail = avail.as_u64();
-                if let (Some(c), Some(avail)) = (c, avail) {
+        match (c, pantry.get(i)) {
+            (Value::Number(c), Some(Value::Number(avail))) => {
+                if let (Some(c), Some(avail)) = (c.as_u64(), avail.as_u64()) {
                     cookies = cookies.min(avail / c)
                 } else {
                     cookies = 0;
                     break
                 }
-            } else {
+            }
+            _ => {
                 // Ingredient not available or quantity not a number
                 cookies = 0;
                 break
@@ -42,12 +41,13 @@ fn compute_bake(cookie: CookieJar) -> eyre::Result<String> {
     if cookies > 0 {
         // Subtract the ingredients used.
         for (i, avail) in pantry.iter_mut() {
-            if let Value::Number(avail) = avail {
-                if let Some(Value::Number(c)) = recipe.get(i) {
+            match (avail, recipe.get(i)) {
+                (Value::Number(avail), Some(Value::Number(c))) => {
                     if let (Some(a), Some(c)) = (avail.as_u64(), c.as_u64()) {
                         *avail = (a - cookies * c).into()
                     }
                 }
+                _ => (),
             }
         }
     }
