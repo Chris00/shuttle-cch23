@@ -22,17 +22,20 @@ fn compute_bake(cookie: CookieJar) -> eyre::Result<String> {
     }
     let mut cookies = u64::MAX;
     for (i, c) in recipe.iter() {
-        match (c, pantry.get(i)) {
-            (Value::Number(c), Some(Value::Number(avail))) => {
-                if let (Some(c), Some(avail)) = (c.as_u64(), avail.as_u64()) {
-                    cookies = cookies.min(avail / c)
-                } else {
-                    cookies = 0;
-                    break
-                }
+        let c = match c {
+            Value::Number(c) => {
+                if let Some(c) = c.as_u64() { c }
+                else { return Err(eyre!("Ingredient {i} quantity {c}")) }
             }
-            _ => {
-                // Ingredient not available or quantity not a number
+            _ => return Err(eyre!("Ingredient {i} quantity {c} not a Number")),
+        };
+        if c > 0 {
+            if let Some(Value::Number(avail)) = pantry.get(i) {
+                let avail = avail.as_u64()
+                    .ok_or(eyre!("Available {i} quantity {avail}"))?;
+                cookies = cookies.min(avail / c)
+            } else {
+                // Ingredient not available (but needed as c > 0).
                 cookies = 0;
                 break
             }
