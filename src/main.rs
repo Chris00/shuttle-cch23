@@ -21,23 +21,21 @@ mod day13;
 #[derive(Clone)]
 struct AppState {
     day12: Arc<Mutex<HashMap<String, Instant>>>,
-    pool: sqlx::PgPool,
+    day13: Arc<Mutex<day13::DB>>,
 }
 
 impl AppState {
-    fn new(pool: sqlx::PgPool) -> Self {
+    fn new() -> Self {
         AppState {
             day12: Arc::new(Mutex::new(HashMap::new())),
-            pool,
+            day13: Arc::new(Mutex::new(day13::DB::new())),
         }
     }
 }
 
 #[shuttle_runtime::main]
-async fn main(
-    #[shuttle_shared_db::Postgres] pool: sqlx::PgPool,
-) -> shuttle_axum::ShuttleAxum {
-    let appstate = AppState::new(pool);
+async fn main() -> shuttle_axum::ShuttleAxum {
+    let appstate = AppState::new();
     let router = Router::new()
         .route("/", get(day_1::it_works))
         .route("/-1/error", get(day_1::error))
@@ -56,6 +54,10 @@ async fn main(
         .route("/12/ulids", post(day12::uuid))
         .route("/12/ulids/:weekday", post(day12::uuid_weekday))
         .route("/13/sql", get(day13::sql))
+        .route("/13/reset", post(day13::reset))
+        .route("/13/orders", post(day13::orders))
+        .route("/13/orders/total", get(day13::orders_total))
+        .route("/13/orders/popular", get(day13::popular))
         .with_state(appstate);
 
     Ok(router.into())
