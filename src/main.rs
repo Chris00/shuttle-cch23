@@ -17,6 +17,7 @@ mod day8;
 mod day11;
 mod day12;
 mod day13;
+mod day14;
 
 #[derive(Clone)]
 struct AppState {
@@ -58,6 +59,8 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .route("/13/orders", post(day13::orders))
         .route("/13/orders/total", get(day13::orders_total))
         .route("/13/orders/popular", get(day13::popular))
+        .route("/14/unsafe", post(day14::render_html_unsafe))
+        .route("/14/safe", post(day14::render_html))
         .with_state(appstate);
 
     Ok(router.into())
