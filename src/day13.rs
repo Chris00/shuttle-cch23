@@ -3,17 +3,18 @@ use std::collections::HashMap;
 use axum::{extract::State, Json, debug_handler};
 use serde::Deserialize;
 
+#[derive(Debug)]
 pub struct DB {
-    entries: Vec<Gift>
+    pub entries: Vec<Gift>
 }
 
 #[derive(Deserialize, Debug)]
 #[allow(dead_code)]
 pub struct Gift {
-    id: u32,
-    region_id: i32,
-    gift_name: String,
-    quantity: i32,
+    pub id: i32,
+    pub region_id: i32,
+    pub gift_name: String,
+    pub quantity: i32,
 }
 
 impl DB {
