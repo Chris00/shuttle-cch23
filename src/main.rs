@@ -20,12 +20,14 @@ mod day13;
 mod day14;
 mod day15;
 mod day18;
+mod day19;
 
 #[derive(Clone, Debug)]
 struct AppState {
     day12: Arc<Mutex<HashMap<String, Instant>>>,
     day13: Arc<Mutex<day13::DB>>,
     day18: Arc<Mutex<day18::Regions>>,
+    day19: Arc<Mutex<day19::Views>>,
 }
 
 impl AppState {
@@ -34,6 +36,7 @@ impl AppState {
             day12: Arc::new(Mutex::new(HashMap::new())),
             day13: Arc::new(Mutex::new(day13::DB::new())),
             day18: Arc::new(Mutex::new(day18::empty_regions())),
+            day19: Arc::new(Mutex::new(day19::Views::new())),
         }
     }
 }
@@ -72,6 +75,10 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .route("/18/regions", post(day18::regions))
         .route("/18/regions/total", get(day18::total))
         .route("/18/regions/top_list/:number", get(day18::top_list))
+        .route("/19/ws/ping", get(day19::ping))
+        .route("/19/reset", post(day19::reset))
+        .route("/19/views", get(day19::views))
+        .route("/19/ws/room/:number/user/:string", get(day19::room))
         .with_state(appstate);
 
     Ok(router.into())
