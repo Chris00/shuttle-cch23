@@ -11,6 +11,7 @@ use std::{
 mod day_1;
 mod day1;
 mod day4;
+mod day5;
 mod day6;
 mod day7;
 mod day8;
@@ -51,6 +52,7 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .route("/1/*nums", get(day1::app))
         .route("/4/strength", post(day4::strength))
         .route("/4/contest", post(day4::contest))
+        .route("/5", post(day5::app))
         .route("/6" , post(day6::app))
         .route("/7/decode", get(day7::decode))
         .route("/7/bake", get(day7::bake))
