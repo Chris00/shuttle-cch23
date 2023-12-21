@@ -23,6 +23,7 @@ mod day15;
 mod day18;
 mod day19;
 mod day20;
+mod day21;
 
 #[derive(Clone, Debug)]
 struct AppState {
@@ -85,6 +86,8 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .route("/20/archive_files", post(day20::archive_files))
         .route("/20/archive_files_size", post(day20::archive_files_size))
         .route("/20/cookie", post(day20::cookie))
+        .route("/21/coords/:binary", get(day21::coords))
+        .route("/21/country/:binary", get(day21::country))
         .with_state(appstate);
 
     Ok(router.into())
