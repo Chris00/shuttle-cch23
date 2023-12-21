@@ -1,9 +1,5 @@
 tunnel:
-	ssh -R 80:localhost:8000 ssi.sh
-#	ssh -R 80:localhost:8000 nokey@localhost.run
-
-serveo:
-	ssh -R 80:localhost:8000 serveo.net
+	ssh -C -R 80:localhost:8000 serveo.net
 
 ngrok:
 	/tmp/ngrok http 8000
@@ -11,4 +7,4 @@ ngrok:
 run:
 	cargo shuttle run
 
-.PHONY: tunnel serveo
+.PHONY: tunnel

@@ -1,5 +1,7 @@
 /target
 .shuttle-storage
 Secrets*.toml
+ngrok.txt
 *.lock
 *.org
+*.tar
