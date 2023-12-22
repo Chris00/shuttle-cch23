@@ -102,7 +102,7 @@ pub async fn rocket(data: String) -> Result<String, StatusCode> {
     let p = Portals::from_str(&data)
         .or(Err(StatusCode::BAD_REQUEST))?;
     let path = shortest_path(&p);
-    if path.len() == 0 { return Err(StatusCode::BAD_REQUEST) }
+    if path.is_empty() { return Err(StatusCode::BAD_REQUEST) }
     let n_portals = path.len() - 1;
     let path_len: f32 = path.windows(2)
         .map(|s| dist_stars(&p, s[0], s[1]))

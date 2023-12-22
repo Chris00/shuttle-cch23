@@ -110,12 +110,10 @@ async fn ping_game(mut socket: WebSocket) {
             if &txt == "serve" {
                 game_started = true
             }
-            if game_started {
-                if &txt == "ping" {
-                    let msg = Message::Text("pong".to_string());
-                    if socket.send(msg).await.is_err() {
-                        return; // Client disconnected
-                    }
+            if game_started && &txt == "ping" {
+                let msg = Message::Text("pong".to_string());
+                if socket.send(msg).await.is_err() {
+                    return; // Client disconnected
                 }
             }
         }

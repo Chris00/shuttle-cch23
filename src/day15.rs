@@ -12,11 +12,11 @@ fn rule4(s: &str) -> bool {
     let mut sum = 0;
     let mut chars = s.char_indices();
     while let Some((i, c)) = chars.next() {
-        if ! c.is_digit(10) { continue }
+        if ! c.is_ascii_digit() { continue }
         let mut j = i;
-        while let Some((j1, c)) = chars.next() {
+        for (j1, c) in chars.by_ref() {
             j = j1;
-            if ! c.is_digit(10) { break; }
+            if ! c.is_ascii_digit() { break; }
         }
         let n: usize = s[i .. j].parse().unwrap();
         sum += n;
@@ -68,13 +68,13 @@ fn rule6(s: &str) -> bool {
 /// Must contain at least one unicode character in the range [U+2980,
 /// U+2BFF].
 fn rule7(s: &str) -> bool {
-    s.chars().find(|&c| '\u{2980}' <= c && c <= '\u{2BFF}').is_some()
+    s.chars().any(|c| ('\u{2980}' ..= '\u{2BFF}').contains(&c))
 }
 
 /// Must contain at least one emoji.
 fn rule8(s: &str) -> bool {
     // https://www.unicode.org/emoji/charts/full-emoji-list.html
-    s.chars().find(|&c| emojis::get(&String::from(c)).is_some()).is_some()
+    s.chars().any(|c| emojis::get(&String::from(c)).is_some())
 }
 
 /// The hexadecimal representation of the sha256 hash of the string
@@ -91,10 +91,10 @@ pub async fn game(Json(s): Json<Input>) -> (StatusCode, String) {
         (StatusCode::BAD_REQUEST, "8 chars")
     } else if !(s.chars().any(|c| c.is_lowercase())
         && s.chars().any(|c| c.is_uppercase())
-        && s.chars().any(|c| c.is_digit(10)))
+        && s.chars().any(|c| c.is_ascii_digit()))
     {
         (StatusCode::BAD_REQUEST, "more types of chars")
-    } else if s.chars().filter(|c| c.is_digit(10)).count() < 5 {
+    } else if s.chars().filter(|c| c.is_ascii_digit()).count() < 5 {
         (StatusCode::BAD_REQUEST, "55555")
     } else if !rule4(&s) {
         (StatusCode::BAD_REQUEST, "math is hard")

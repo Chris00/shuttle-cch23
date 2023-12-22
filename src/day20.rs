@@ -1,4 +1,5 @@
 use std::{
+    cmp::Reverse,
     fmt::Debug,
     path::{Path, PathBuf},
     fs::File,
@@ -53,8 +54,8 @@ async fn get_cookie(dst: impl AsRef<Path>) -> eyre::Result<String> {
                 }
                 TreeWalkResult::Ok})?;
     }
-    commits.sort_by(|c1, c2| c2.time().cmp(&c1.time()));
-    if let Some(commit) = commits.get(0) {
+    commits.sort_by_key(|c| Reverse(c.time()));
+    if let Some(commit) = commits.first() {
         let author = commit.author();
         let author = author.name().unwrap_or("");
         Ok(format!("{} {}", author, commit.id()))

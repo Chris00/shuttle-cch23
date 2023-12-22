@@ -44,14 +44,12 @@ fn compute_bake(cookie: CookieJar) -> eyre::Result<String> {
     if cookies > 0 {
         // Subtract the ingredients used.
         for (i, avail) in pantry.iter_mut() {
-            match (avail, recipe.get(i)) {
-                (Value::Number(avail), Some(Value::Number(c))) => {
+            if let (Value::Number(avail), Some(Value::Number(c)))
+                = (avail, recipe.get(i)) {
                     if let (Some(a), Some(c)) = (avail.as_u64(), c.as_u64()) {
                         *avail = (a - cookies * c).into()
                     }
                 }
-                _ => (),
-            }
         }
     }
     Ok(format!(r#"{{ "cookies": {cookies}, "pantry": {} }}"#,
@@ -64,8 +62,8 @@ pub async fn bake(cookie: CookieJar) -> Result<String, StatusCode> {
 }
 
 pub async fn decode(cookie: CookieJar) -> Result<String, StatusCode> {
-    Ok(decode_recipe(cookie)
-        .or(Err(StatusCode::INTERNAL_SERVER_ERROR))?)
+    decode_recipe(cookie)
+        .or(Err(StatusCode::INTERNAL_SERVER_ERROR))
 }
 
 fn decode_recipe(cookie: CookieJar) -> eyre::Result<String> {

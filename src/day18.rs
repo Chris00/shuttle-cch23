@@ -1,4 +1,4 @@
-use std::{collections::HashMap, cmp::Ordering};
+use std::collections::HashMap;
 
 use axum::{extract::{Path, State}, Json, debug_handler};
 use serde::{Deserialize, Serialize};
@@ -68,9 +68,7 @@ pub async fn top_list(
         }
         let mut gifts: Vec<_> = gifts.drain().collect();
         gifts.sort_by(|(name1, n1), (name2, n2)| {
-            if n1 > n2 { Ordering::Less }
-            else if n1 < n2 { Ordering::Greater }
-            else { name1.cmp(name2) }
+            n1.cmp(n2).reverse().then(name1.cmp(name2))
         });
         let n = number.max(0) as usize;
         let top_gifts = gifts.into_iter().take(n)
