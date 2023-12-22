@@ -170,6 +170,7 @@ mod test {
         assert!(rule5("jjazqooDESyay"));
         assert!(!rule5("jyj"));
         assert!(!rule5("jazeosd"));
+        assert!(!rule5("2000.23.A joy joy"));
     }
 
     #[test]
@@ -178,6 +179,7 @@ mod test {
         assert!(!rule6("xxx"));
         assert!(rule6("xyabcb"));
         assert!(!rule6("xy7x"));
+        assert!(!rule6("2000.23.A joy joy"));
     }
 
     #[test]

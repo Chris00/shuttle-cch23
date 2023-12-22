@@ -68,11 +68,6 @@ mod test {
         assert_eq!(u64_of_binary("100"), 4);
         assert_eq!(u64_of_binary("101"), 5);
     }
-
-    #[test]
-    fn test_degree() {
-
-    }
 }
 
 lazy_static!{
