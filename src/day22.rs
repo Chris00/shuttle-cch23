@@ -22,7 +22,7 @@ pub async fn integers(int: String) -> String {
 
 #[derive(Debug)]
 struct Portals {
-    star: Vec<[f64; 3]>,
+    star: Vec<[f32; 3]>,
     portal: HashMap<usize, Vec<usize>>,
 }
 
@@ -34,7 +34,7 @@ impl Portals {
         let mut star = Vec::with_capacity(n);
         for i in 0 .. n {
             let line = lines.next().ok_or(eyre!("star {i}"))?;
-            let c: Vec<f64> = line.split_whitespace()
+            let c: Vec<f32> = line.split_whitespace()
                 .filter_map(|n| n.parse().ok())
                 .collect();
             if c.len() == 3 {
@@ -91,7 +91,7 @@ fn shortest_path(p: &Portals) -> Vec<usize> {
     vec![]
 }
 
-fn dist_stars(p: &Portals, s0: usize, s1: usize) -> f64 {
+fn dist_stars(p: &Portals, s0: usize, s1: usize) -> f32 {
     let [x0, y0, z0] = p.star[s0];
     let [x1, y1, z1] = p.star[s1];
     // Naive computation (may over & underflow):
@@ -104,7 +104,7 @@ pub async fn rocket(data: String) -> Result<String, StatusCode> {
     let path = shortest_path(&p);
     if path.len() == 0 { return Err(StatusCode::BAD_REQUEST) }
     let n_portals = path.len() - 1;
-    let path_len: f64 = path.windows(2)
+    let path_len: f32 = path.windows(2)
         .map(|s| dist_stars(&p, s[0], s[1]))
         .sum();
     Ok(format!("{n_portals} {path_len:.3}"))
